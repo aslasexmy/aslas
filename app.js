@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const WHATSAPP_NUMBER = '60138774261';
+const WHATSAPP_NUMBER = "60138774261";
 const PACKAGE_PRICE = 129;
 
 const iconPaths = {
@@ -18,7 +18,7 @@ const iconPaths = {
 
 function makeIcon(name) {
   const paths = iconPaths[name];
-  if (!paths) return '';
+  if (!paths) return "";
 
   return `
     <svg
@@ -40,112 +40,93 @@ function buildWhatsAppUrl(message) {
 }
 
 function initIcons() {
-  document.querySelectorAll('[data-icon]').forEach((el) => {
+  document.querySelectorAll("[data-icon]").forEach((el) => {
     const icon = makeIcon(el.dataset.icon);
-
-    if (icon) {
-      el.innerHTML = icon;
-    }
+    if (icon) el.innerHTML = icon;
   });
 }
 
 function initYear() {
-  const year = document.getElementById('year');
-
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
+  const year = document.getElementById("year");
+  if (year) year.textContent = new Date().getFullYear();
 }
 
 function initRanking() {
   const rankData = {
     area: {
-      name: 'Sendayan Metropark',
+      name: "Sendayan Metropark",
       rank: 3,
       total: 24,
       bars: [28, 42, 36, 55, 50, 71, 68, 90, 82, 100]
     },
     district: {
-      name: 'Seremban',
+      name: "Seremban",
       rank: 12,
       total: 86,
       bars: [20, 35, 31, 48, 57, 52, 72, 83, 76, 94]
     },
     state: {
-      name: 'Negeri Sembilan',
+      name: "Negeri Sembilan",
       rank: 28,
       total: 215,
       bars: [16, 22, 35, 30, 44, 56, 50, 72, 82, 91]
     },
     national: {
-      name: 'Seluruh Malaysia',
+      name: "Malaysia",
       rank: 146,
       total: 1840,
       bars: [12, 21, 19, 32, 46, 41, 62, 57, 75, 88]
     }
   };
 
-  const tabs = Array.from(document.querySelectorAll('[data-rank]'));
-  const panel = document.getElementById('rank-panel');
-  const number = document.getElementById('rank-number');
-  const total = document.getElementById('rank-total');
-  const location = document.querySelector('.rank-location');
-  const bars = Array.from(document.querySelectorAll('.rank-bars span'));
+  const tabs = Array.from(document.querySelectorAll("[data-rank]"));
+  const panel = document.getElementById("rank-panel");
+  const number = document.getElementById("rank-number");
+  const total = document.getElementById("rank-total");
+  const location = document.querySelector(".rank-location");
+  const bars = Array.from(document.querySelectorAll(".rank-bars span"));
 
-  if (!tabs.length || !panel || !number || !total || !location) {
-    return;
-  }
+  if (!tabs.length || !panel || !number || !total || !location) return;
 
   const selectRanking = (tab) => {
     const data = rankData[tab.dataset.rank];
-
     if (!data) return;
 
     tabs.forEach((item) => {
       const active = item === tab;
-
-      item.setAttribute('aria-selected', String(active));
+      item.setAttribute("aria-selected", String(active));
       item.tabIndex = active ? 0 : -1;
     });
 
-    panel.setAttribute('aria-labelledby', tab.id);
-
+    panel.setAttribute("aria-labelledby", tab.id);
     location.textContent = data.name;
     number.textContent = data.rank;
-
-    total.textContent =
-      `/ ${data.total.toLocaleString('ms-MY')} bisnes`;
+    total.textContent = `/ ${data.total.toLocaleString("en-MY")} businesses`;
 
     bars.forEach((bar, index) => {
-      bar.style.setProperty(
-        '--h',
-        `${data.bars[index] || 10}%`
-      );
+      bar.style.setProperty("--h", `${data.bars[index] || 10}%`);
     });
   };
 
   tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => {
-      selectRanking(tab);
-    });
+    tab.addEventListener("click", () => selectRanking(tab));
 
-    tab.addEventListener('keydown', (event) => {
+    tab.addEventListener("keydown", (event) => {
       let targetIndex;
 
-      if (event.key === 'ArrowRight') {
+      if (event.key === "ArrowRight") {
         targetIndex = (index + 1) % tabs.length;
-      } else if (event.key === 'ArrowLeft') {
+      } else if (event.key === "ArrowLeft") {
         targetIndex = (index + tabs.length - 1) % tabs.length;
-      } else if (event.key === 'Home') {
+      } else if (event.key === "Home") {
         targetIndex = 0;
-      } else if (event.key === 'End') {
+      } else if (event.key === "End") {
         targetIndex = tabs.length - 1;
       } else {
         return;
       }
 
       event.preventDefault();
-
       tabs[targetIndex].focus();
       selectRanking(tabs[targetIndex]);
     });
@@ -153,260 +134,157 @@ function initRanking() {
 }
 
 function initContactForm() {
-  const form = document.getElementById('contact-form');
-
+  const form = document.getElementById("contact-form");
   if (!form) return;
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
-
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
-
-    const name =
-      String(data.get('name') || '').trim();
-
-    const business =
-      String(data.get('business') || '').trim();
-
-    const question =
-      String(data.get('message') || '').trim();
-
-    const feedback =
-      document.getElementById('form-feedback');
+    const name = String(data.get("name") || "").trim();
+    const business = String(data.get("business") || "").trim();
+    const question = String(data.get("message") || "").trim();
+    const feedback = document.getElementById("form-feedback");
 
     if (!name || !business) {
       if (feedback) {
-        feedback.textContent =
-          'Sila masukkan nama anda dan nama bisnes.';
+        feedback.textContent = "Please enter your name and business name.";
       }
-
       return;
     }
 
     const message = [
-      'Hai ASLAS!',
-      `Saya ${name} dari ${business}.`,
+      "Hi ASLAS!",
+      `I'm ${name} from ${business}.`,
       question ||
-        `Saya berminat dengan pakej ASLAS RM${PACKAGE_PRICE} upfront. Boleh kongsikan cara nak mula?`
-    ].join('\n\n');
+        `I'm interested in the ASLAS RM${PACKAGE_PRICE} Starter package. Can you show me how to get started?`
+    ].join("\n\n");
 
     const url = buildWhatsAppUrl(message);
 
-    window.open(
-      url,
-      '_blank',
-      'noopener,noreferrer'
-    );
+    window.open(url, "_blank", "noopener,noreferrer");
 
     if (feedback) {
       feedback.replaceChildren();
+      feedback.append("If WhatsApp did not open, ");
 
-      feedback.append(
-        'Jika WhatsApp belum terbuka, '
-      );
-
-      const link =
-        document.createElement('a');
-
+      const link = document.createElement("a");
       link.href = url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent =
-        'buka mesej anda di sini';
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "open your message here";
 
-      feedback.append(link, '.');
+      feedback.append(link, ".");
     }
   });
 }
 
 function initRevealAnimations() {
-  const revealElements =
-    document.querySelectorAll('.reveal');
-
+  const revealElements = document.querySelectorAll(".reveal");
   if (!revealElements.length) return;
 
-  const reducedMotion =
-    window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
 
-  if (
-    !('IntersectionObserver' in window) ||
-    reducedMotion
-  ) {
-    revealElements.forEach((el) => {
-      el.classList.add('visible');
-    });
-
+  if (!("IntersectionObserver" in window) || reducedMotion) {
+    revealElements.forEach((el) => el.classList.add("visible"));
     return;
   }
 
-  const observer =
-    new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
 
-          entry.target.classList.remove(
-            'entering'
-          );
-
-          entry.target.classList.add(
-            'visible'
-          );
-
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.08,
-        rootMargin: '0px 0px -4% 0px'
-      }
-    );
+        entry.target.classList.remove("entering");
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.08,
+      rootMargin: "0px 0px -4% 0px"
+    }
+  );
 
   revealElements.forEach((el) => {
-    if (
-      el.getBoundingClientRect().top >
-      window.innerHeight
-    ) {
-      el.classList.add('entering');
+    if (el.getBoundingClientRect().top > window.innerHeight) {
+      el.classList.add("entering");
       observer.observe(el);
     } else {
-      el.classList.add('visible');
+      el.classList.add("visible");
     }
   });
 }
 
 function initImageFallbacks() {
-  document
-    .querySelectorAll('img')
-    .forEach((img) => {
-      const applyFallback = () => {
-        const parent = img.parentElement;
+  document.querySelectorAll("img").forEach((img) => {
+    const applyFallback = () => {
+      const parent = img.parentElement;
 
-        if (
-          !parent ||
-          parent.dataset.imageFallback ===
-            'true'
-        ) {
-          return;
-        }
+      if (!parent || parent.dataset.imageFallback === "true") return;
 
-        parent.dataset.imageFallback =
-          'true';
+      parent.dataset.imageFallback = "true";
+      parent.classList.add("image-fallback");
+      img.hidden = true;
 
-        parent.classList.add(
-          'image-fallback'
-        );
+      const label = document.createElement("span");
+      label.className = "image-fallback-label";
+      label.textContent = "ASLAS";
+      label.setAttribute("aria-hidden", "true");
 
-        img.hidden = true;
+      parent.appendChild(label);
+    };
 
-        const label =
-          document.createElement('span');
-
-        label.className =
-          'image-fallback-label';
-
-        label.textContent = 'ASLAS';
-
-        label.setAttribute(
-          'aria-hidden',
-          'true'
-        );
-
-        parent.appendChild(label);
-      };
-
-      if (
-        img.complete &&
-        img.naturalWidth === 0
-      ) {
-        applyFallback();
-      } else {
-        img.addEventListener(
-          'error',
-          applyFallback,
-          { once: true }
-        );
-      }
-    });
+    if (img.complete && img.naturalWidth === 0) {
+      applyFallback();
+    } else {
+      img.addEventListener("error", applyFallback, { once: true });
+    }
+  });
 }
 
 function initMobileWhatsApp() {
-  if (
-    document.querySelector(
-      '.mobile-whatsapp'
-    )
-  ) {
-    return;
-  }
+  if (document.querySelector(".mobile-whatsapp")) return;
 
   const message =
-    `Hai ASLAS! Saya berminat dengan pakej ASLAS RM${PACKAGE_PRICE}. ` +
-    'Boleh bantu saya setup Google Review untuk bisnes saya?';
+    `Hi ASLAS! I'm interested in the ASLAS RM${PACKAGE_PRICE} Starter package. ` +
+    "Can you help me set up a simple Google Review flow for my business?";
 
-  const link =
-    document.createElement('a');
-
-  link.className = 'mobile-whatsapp';
-
-  link.href =
-    buildWhatsAppUrl(message);
-
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-
-  link.setAttribute(
-    'aria-label',
-    'Hubungi ASLAS melalui WhatsApp'
-  );
+  const link = document.createElement("a");
+  link.className = "mobile-whatsapp";
+  link.href = buildWhatsAppUrl(message);
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.setAttribute("aria-label", "Contact ASLAS on WhatsApp");
 
   link.innerHTML = `
     <span>WhatsApp ASLAS</span>
-    <strong>RM129 →</strong>
+    <strong>RM129 â</strong>
   `;
 
   document.body.appendChild(link);
 }
 
 function initStickyHeader() {
-  const header =
-    document.querySelector('.header');
-
+  const header = document.querySelector(".header");
   if (!header) return;
 
   const update = () => {
-    header.classList.toggle(
-      'is-scrolled',
-      window.scrollY > 24
-    );
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
   };
 
   update();
-
-  window.addEventListener(
-    'scroll',
-    update,
-    { passive: true }
-  );
+  window.addEventListener("scroll", update, { passive: true });
 }
 
 function injectEnhancementStyles() {
-  if (
-    document.getElementById(
-      'aslas-enhancement-styles'
-    )
-  ) {
-    return;
-  }
+  if (document.getElementById("aslas-enhancement-styles")) return;
 
-  const style =
-    document.createElement('style');
-
-  style.id =
-    'aslas-enhancement-styles';
+  const style = document.createElement("style");
+  style.id = "aslas-enhancement-styles";
 
   style.textContent = `
     .header {
@@ -442,7 +320,7 @@ function injectEnhancementStyles() {
     }
 
     .image-fallback:after {
-      content: '';
+      content: "";
       position: absolute;
       inset: 10%;
       border:
@@ -471,7 +349,6 @@ function injectEnhancementStyles() {
     }
 
     @media (max-width: 650px) {
-
       body {
         padding-bottom: 84px;
       }
@@ -490,7 +367,6 @@ function injectEnhancementStyles() {
         display: flex;
         align-items: center;
         justify-content: space-between;
-
         gap: 16px;
 
         padding: 15px 18px;
@@ -526,58 +402,37 @@ function injectEnhancementStyles() {
 }
 
 function injectStructuredData() {
-  if (
-    document.querySelector(
-      'script[data-aslas-schema]'
-    )
-  ) {
-    return;
-  }
+  if (document.querySelector("script[data-aslas-schema]")) return;
 
   const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-
-    name: 'ASLAS Starter',
-
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "ASLAS Starter",
     description:
-      'Stand NFC dan QR untuk memudahkan pelanggan berkongsi Google Review serta membantu pemilik bisnes memantau perkembangan reputasi.',
-
+      "An NFC and QR Google Review stand designed to make customer reviews easier while helping business owners track reputation growth.",
     brand: {
-      '@type': 'Brand',
-      name: 'ASLAS'
+      "@type": "Brand",
+      name: "ASLAS"
     },
-
     offers: {
-      '@type': 'Offer',
-      priceCurrency: 'MYR',
+      "@type": "Offer",
+      priceCurrency: "MYR",
       price: String(PACKAGE_PRICE),
-
-      availability:
-        'https://schema.org/InStock',
-
-      url:
-        window.location.href.split('#')[0]
+      availability: "https://schema.org/InStock",
+      url: window.location.href.split("#")[0]
     }
   };
 
-  const script =
-    document.createElement('script');
-
-  script.type =
-    'application/ld+json';
-
-  script.dataset.aslasSchema = 'true';
-
-  script.textContent =
-    JSON.stringify(schema);
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.dataset.aslasSchema = "true";
+  script.textContent = JSON.stringify(schema);
 
   document.head.appendChild(script);
 }
 
 function init() {
   injectEnhancementStyles();
-
   initIcons();
   initYear();
   initRanking();
@@ -589,14 +444,8 @@ function init() {
   injectStructuredData();
 }
 
-if (
-  document.readyState === 'loading'
-) {
-  document.addEventListener(
-    'DOMContentLoaded',
-    init,
-    { once: true }
-  );
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init, { once: true });
 } else {
   init();
 }
